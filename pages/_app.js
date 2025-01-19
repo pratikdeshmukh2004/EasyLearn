@@ -57,9 +57,9 @@ export default function App({ Component, pageProps }) {
     });
   };
 
-  useEffect(() => {
-    Authorize();
-  }, []);
+  // useEffect(() => {
+  //   Authorize();
+  // }, []);
 
   if (!doc && !router.asPath.startsWith("/auth") && router.asPath !== "/")
     return <Loader />;
