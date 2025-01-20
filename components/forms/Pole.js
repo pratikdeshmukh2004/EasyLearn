@@ -389,15 +389,6 @@ const Pole = ({ isEditing = null }) => {
   );
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setPosition({
-        lat: position.coords.latitude,
-        long: position.coords.longitude,
-      });
-    });
-  }, [navigator]);
-
-  useEffect(() => {
     let prefilled = {};
     if (isEditing) {
       const row = poles?.find((row) => row._rowNumber == params.get("pole"));
