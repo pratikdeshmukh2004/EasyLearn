@@ -65,7 +65,7 @@ export default function App({ Component, pageProps }) {
     return <Loader />;
 
   return (
-    <div className="max-w-sm mx-auto shadow-none lg:shadow-lg">
+    <div className="max-w-sm mx-auto">
       <Head>
         <title>EasyLearn</title>
       </Head>

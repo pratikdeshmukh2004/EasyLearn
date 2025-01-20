@@ -1,7 +1,16 @@
 import Header from "@/components/Header";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      router.replace("/home");
+    }
+  }, []);
   return (
     <div>
       <Header />
