@@ -8,11 +8,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import sheetApiContext from "../Context/sheetApiContext";
 import { useRouter } from "next/router";
+import Head from "next/head";
 export default function App({ Component, pageProps }) {
   const [doc, setDoc] = useState(null);
   const [dataSheet, setDataSheet] = useState(null);
   const [poles, setPoles] = useState(null);
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const router = useRouter();
 
   const loadDoc = async () => {
@@ -30,21 +32,21 @@ export default function App({ Component, pageProps }) {
     await doc.loadInfo();
     setDoc(doc);
     doc.sheetsByIndex[0].getRows().then((data) => {
-      setDataSheet(data);
+      setUsers(data);
       console.log("Datasheet loaded: ", data);
     });
     doc.sheetsByIndex[1].getRows().then((data) => {
-      setPoles(data);
+      setDataSheet(data);
       console.log("Poles loaded: ", data);
     });
   };
 
   const Authorize = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user && router.asPath !== "/auth/login" && router.asPath !== "/") {
+    if (!user && !router.asPath.startsWith("/auth") && router.asPath !== "/") {
       router.replace("/auth/login");
     } else {
-      // loadDoc();
+      loadDoc();
       setUser(user);
     }
   };
@@ -59,24 +61,27 @@ export default function App({ Component, pageProps }) {
     Authorize();
   }, []);
 
-  if (!doc && !router.asPath.startsWith("/auth") && router.asPath !== "/") return <Loader />;
+  if (!doc && !router.asPath.startsWith("/auth") && router.asPath !== "/")
+    return <Loader />;
 
   return (
-    <sheetApiContext.Provider value={{ doc, setDoc }}>
-      <DataContext.Provider
-        value={{
-          dataSheet,
-          poles,
-          setPoles,
-          setDataSheet,
-          loadPoles,
-          doc,
-          user,
-        }}
-      >
-        <ToastContainer />
-        <Component {...pageProps} />
-      </DataContext.Provider>
-    </sheetApiContext.Provider>
+    <div className="max-w-sm mx-auto shadow-none lg:shadow-lg">
+      <Head>
+        <title>EasyLearn</title>
+      </Head>
+      <sheetApiContext.Provider value={{ doc, setDoc }}>
+        <DataContext.Provider
+          value={{
+            dataSheet,
+            users,
+            doc,
+            user,
+          }}
+        >
+          <ToastContainer />
+          <Component {...pageProps} />
+        </DataContext.Provider>
+      </sheetApiContext.Provider>
+    </div>
   );
 }

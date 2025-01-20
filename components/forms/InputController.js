@@ -10,6 +10,7 @@ const InputController = ({ label, ...rest }) => {
     // </div>
     <div class="relative">
       <input
+        name={label}
         type="text"
         {...rest}
         id={label}

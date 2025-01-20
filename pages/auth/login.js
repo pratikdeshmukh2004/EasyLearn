@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/router";
@@ -6,8 +6,11 @@ import { useEffect } from "react";
 import Header from "@/components/Header";
 import Link from "next/link";
 import InputController from "@/components/forms/InputController";
+import DataContext from "@/Context/dataContext";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
+  const { users } = useContext(DataContext);
   const router = useRouter();
 
   const handleSuccess = (credentialResponse) => {
@@ -19,8 +22,20 @@ const LoginForm = () => {
     })
       .then((response) => response.json())
       .then((userInfo) => {
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        window.location.href = "/";
+        console.log(userInfo);
+        const user = users.filter(
+          (user) => user.get("Email ID") == userInfo.email
+        );
+        if (user.length) {
+          const obj = {};
+          user[0]._worksheet.headerValues.forEach((header) => {
+            obj[header] = user[0].get(header);
+          });
+          localStorage.setItem("user", JSON.stringify(obj));
+          window.location.href = "/language";
+        } else {
+          toast.error("User doesn't exists. Please Signup.");
+        }
       })
       .catch((error) => {
         console.error("Failed to fetch user info: ", error);
@@ -38,17 +53,45 @@ const LoginForm = () => {
     }
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+    const user = users.filter((user) => user.get("Username") == username);
+    if (user.length == 0) {
+      return toast.error("User doesn't exists. Please Signup.");
+    }
+    if (user[0].get("Password") == password) {
+      const obj = {};
+      user[0]._worksheet.headerValues.forEach((header) => {
+        obj[header] = user[0].get(header);
+      });
+      localStorage.setItem("user", JSON.stringify(obj));
+      window.location.href = "/language";
+      return;
+    }
+    return toast.error("Invalid username/password");
+  };
+
   return (
     <div>
       <Header />
       <main className="h-screen px-5 items-center justify-center flex flex-col">
         <div className="max-w-sm w-full text-gray-600 space-y-8">
           <h4 className="text-3xl font-bold text-black text-center">Login</h4>
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
-            <InputController label={"Username"}/>
-            <InputController label={"Password"}/>
-            
-            <button className="w-full mb-3 px-4 py-2 text-white font-medium bg-black rounded-lg duration-150">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <InputController required name="username" label={"Username"} />
+            <InputController
+              required
+              type="password"
+              name="password"
+              label={"Password"}
+            />
+
+            <button
+              type="submit"
+              className="w-full mb-3 px-4 py-2 text-white font-medium bg-black rounded-lg duration-150"
+            >
               Sign in
             </button>
           </form>
@@ -97,7 +140,9 @@ const LoginForm = () => {
               Continue with Google
             </button>
           </div>
-          <p className="text-center font-medium text-[#474747]">Don't have an account? <Link href="/auth/signup">Sign Up</Link></p>
+          <p className="text-center font-medium text-[#474747]">
+            Don't have an account? <Link href="/auth/signup">Sign Up</Link>
+          </p>
         </div>
       </main>
     </div>
