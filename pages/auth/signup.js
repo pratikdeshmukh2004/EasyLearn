@@ -3,11 +3,13 @@ import SelectInput from "@/components/forms/SelectController";
 import Header from "@/components/Header";
 import DataContext from "@/Context/dataContext";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useContext } from "react";
 import { toast } from "react-toastify";
 
 const Signup = () => {
   const { users, dataSheet, doc } = useContext(DataContext);
+  const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ const Signup = () => {
     doc.sheetsByIndex[0].addRows([formObject]).then((data) => {
       console.log("data...", data);
       localStorage.setItem("user", JSON.stringify(formObject));
-      window.location.href = "/language";
+      router.push("/language")
     });
     return;
   };

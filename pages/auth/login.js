@@ -32,7 +32,7 @@ const LoginForm = () => {
             obj[header] = user[0].get(header);
           });
           localStorage.setItem("user", JSON.stringify(obj));
-          window.location.href = "/language";
+          router.push("/language")
         } else {
           toast.error("User doesn't exists. Please Signup.");
         }
@@ -67,7 +67,7 @@ const LoginForm = () => {
         obj[header] = user[0].get(header);
       });
       localStorage.setItem("user", JSON.stringify(obj));
-      window.location.href = "/language";
+      router.push("/language");
       return;
     }
     return toast.error("Invalid username/password");

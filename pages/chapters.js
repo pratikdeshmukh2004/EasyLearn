@@ -1,6 +1,8 @@
+import Header from "@/components/Header";
 
 const Course = () => {
     return <div className="text-center">
+        <Header buttons={[{title: 'Home', 'link': "/home"}]}/>
         <div>
             <h4 className="text-black mt-20 font-medium text-xl">Chapter</h4>
             <div className="grid grid-cols-2 gap-5 my-9 mx-5">
