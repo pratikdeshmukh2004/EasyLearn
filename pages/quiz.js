@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Quiz = () => {
   return (
     <div>
@@ -68,9 +70,9 @@ const Quiz = () => {
             Prev
           </button>
           <p>1 of 5</p>
-          <button className="bg-black hover:bg-gray-700 p-3 px-8 rounded-lg text-white text-sm font-bold">
+          <Link href={"/score"}><button className="bg-black hover:bg-gray-700 p-3 px-8 rounded-lg text-white text-sm font-bold">
             Next
-          </button>
+          </button></Link>
         </div>
       </div>
     </div>
