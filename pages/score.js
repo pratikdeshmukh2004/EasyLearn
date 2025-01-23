@@ -12,7 +12,7 @@ const Score = () => {
         <div className="m-5">
           <h4 className="font-semibold mt-9">Score Breakdown:</h4>
           <p className="text-sm mt-3 text-gray-800">Correct Answers: 17</p>
-          <p className="text-sm text-gray-800">Wrong Answers:3</p>
+          <p className="text-sm text-gray-800">Wrong Answers: 3</p>
           <p className="text-sm text-gray-800">Time Taken: 12 minutes</p>
         </div>
       </div>

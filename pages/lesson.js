@@ -5,7 +5,7 @@ import Link from "next/link";
 const Lesson = () => {
   return (
     <div>
-      <Header buttons={[{ title: "Back to contents", link: "/chapters" }]} />
+      <Header buttons={[{ title: "Home", link: "/home" }]} />
       <div className="mt-24 mx-5">
         <h1 className="text-2xl font-medium">Chapter 1 Magnetism</h1>
         <p className="text-sm mt-5">
