@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/router";
@@ -8,12 +8,16 @@ import Link from "next/link";
 import InputController from "@/components/forms/InputController";
 import DataContext from "@/Context/dataContext";
 import { toast } from "react-toastify";
+import sheetApiContext from "@/Context/sheetApiContext";
 
 const LoginForm = () => {
-  const { users } = useContext(DataContext);
+  const { workSheetData } = useContext(sheetApiContext);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
-  const handleSuccess = (credentialResponse) => {
+  const handleSuccess = async (credentialResponse) => {
+    const users = await workSheetData("Users");
     const token = credentialResponse.access_token;
     fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
       headers: {
@@ -32,7 +36,7 @@ const LoginForm = () => {
             obj[header] = user[0].get(header);
           });
           localStorage.setItem("user", JSON.stringify(obj));
-          router.push("/language")
+          router.push("/language");
         } else {
           toast.error("User doesn't exists. Please Signup.");
         }
@@ -53,11 +57,15 @@ const LoginForm = () => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    const users = await workSheetData("Users");
+    console.log(users, "users....");
     const username = e.target.username.value;
     const password = e.target.password.value;
     const user = users.filter((user) => user.get("Username") == username);
+    setLoading(false);
     if (user.length == 0) {
       return toast.error("User doesn't exists. Please Signup.");
     }
@@ -90,7 +98,8 @@ const LoginForm = () => {
 
             <button
               type="submit"
-              className="w-full mb-3 px-4 py-2 text-white font-medium bg-black rounded-lg duration-150"
+              disabled={loading}
+              className="w-full disabled:bg-gray-900 disabled:cursor-wait mb-3 px-4 py-2 text-white font-medium bg-black rounded-lg duration-150"
             >
               Sign in
             </button>

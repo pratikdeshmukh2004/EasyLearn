@@ -3,7 +3,7 @@ import Link from "next/link";
 const Header = ({ buttons }) => {
   return (
     <div className="p-5 z-50 max-w-sm top-0 bg-white fixed w-full flex items-center gap-2">
-      <Link className="flex gap-2 items-center" href="/">
+      <Link className="flex gap-2 items-center" href="/home">
         <img src="/logo.jpeg" alt="logo" />
         <h4 className="font-medium">EasyLearn</h4>
       </Link>

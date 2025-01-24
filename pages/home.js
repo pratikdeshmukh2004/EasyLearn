@@ -17,7 +17,7 @@ const Course = () => {
         </button>
       </Link>
       <br />
-      <Link href={"/lesson"}>
+      <Link href={"/chapters"}>
         <button className="mt-14 bg-black text-white rounded-md py-2 px-3">
           Direct Courses
         </button>

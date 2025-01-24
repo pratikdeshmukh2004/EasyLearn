@@ -2,14 +2,28 @@ import InputController from "@/components/forms/InputController";
 import SelectInput from "@/components/forms/SelectController";
 import Header from "@/components/Header";
 import DataContext from "@/Context/dataContext";
+import sheetApiContext from "@/Context/sheetApiContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const Signup = () => {
-  const { users, dataSheet, doc } = useContext(DataContext);
-  const router = useRouter()
+  const { doc, workSheetData } = useContext(sheetApiContext);
+  const [dataSheet, setDataSheet] = useState([]);
+
+  const loadDataSheet = async () => {
+    const d = await workSheetData("DataSheet");
+    setDataSheet(d);
+  };
+
+  useEffect(() => {
+    loadDataSheet();
+  });
+
+  // const users = workSheetData("Users");
+
+  const router = useRouter();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,7 +35,6 @@ const Signup = () => {
     formData.forEach((value, key) => {
       formObject[key] = value;
     });
-    console.log(formObject);
 
     const username = formObject["Username"];
     const password = formObject["Password"];
@@ -41,7 +54,7 @@ const Signup = () => {
     doc.sheetsByIndex[0].addRows([formObject]).then((data) => {
       console.log("data...", data);
       localStorage.setItem("user", JSON.stringify(formObject));
-      router.push("/language")
+      router.push("/language");
     });
     return;
   };
@@ -63,15 +76,21 @@ const Signup = () => {
               label={"Confirm Password"}
             />
             <SelectInput
-              options={dataSheet?.map((item) => item.get("Standard")).filter((item)=>item)}
+              options={dataSheet
+                ?.map((item) => item.get("Standard"))
+                .filter((item) => item)}
               label="Standard"
             />
             <SelectInput
-              options={dataSheet?.map((item) => item.get("Board")).filter((item)=>item)}
+              options={dataSheet
+                ?.map((item) => item.get("Board"))
+                .filter((item) => item)}
               label="Board"
             />
             <SelectInput
-              options={dataSheet?.map((item) => item.get("Medium")).filter((item)=>item)}
+              options={dataSheet
+                ?.map((item) => item.get("Medium"))
+                .filter((item) => item)}
               label="Medium"
             />
             <button
