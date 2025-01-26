@@ -2,20 +2,10 @@ import { faVolumeHigh, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
 
-const AudioController = () => {
+const AudioController = ({ link }) => {
   const audioRef = useRef(null); // Reference to the audio element
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.75); // Default volume (1 = 100%)
-
-  // Play or pause audio
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
 
   // Handle volume change
   const handleVolumeChange = (event) => {
@@ -33,13 +23,13 @@ const AudioController = () => {
       ></audio>
       <div className="flex justify-between">
         <button
-          onClick={togglePlayPause}
+          onClick={() => audioRef.current.play()}
           className="bg-black hover:bg-gray-700 p-3 px-6 rounded-lg text-white text-sm font-medium"
         >
           Play
         </button>
         <button
-          onClick={togglePlayPause}
+          onClick={() => audioRef.current.pause()}
           className="bg-black hover:bg-gray-700 p-3 px-6 rounded-lg text-white text-sm font-medium"
         >
           Pause
@@ -64,7 +54,7 @@ const AudioController = () => {
           }}
           onChange={handleVolumeChange}
         />
-        {volume*100}%
+        {volume * 100}%
         <label htmlFor="volume">
           <FontAwesomeIcon icon={faVolumeHigh} />
         </label>
