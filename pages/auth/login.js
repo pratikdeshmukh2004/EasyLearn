@@ -9,6 +9,7 @@ import InputController from "@/components/forms/InputController";
 import DataContext from "@/Context/dataContext";
 import { toast } from "react-toastify";
 import sheetApiContext from "@/Context/sheetApiContext";
+import { comparePassword } from "@/utils/passwordManager";
 
 const LoginForm = () => {
   const { workSheetData } = useContext(sheetApiContext);
@@ -26,7 +27,6 @@ const LoginForm = () => {
     })
       .then((response) => response.json())
       .then((userInfo) => {
-        console.log(userInfo);
         const user = users.filter(
           (user) => user.get("Email ID") == userInfo.email
         );
@@ -35,6 +35,11 @@ const LoginForm = () => {
           user[0]._worksheet.headerValues.forEach((header) => {
             obj[header] = user[0].get(header);
           });
+          if (!obj["Verified"]) {
+            return toast.error(
+              "You are not verified yet. Please contact the admin."
+            );
+          }
           localStorage.setItem("user", JSON.stringify(obj));
           router.push("/home");
         } else {
@@ -69,11 +74,17 @@ const LoginForm = () => {
     if (user.length == 0) {
       return toast.error("User doesn't exists. Please Signup.");
     }
-    if (user[0].get("Password") == password) {
+    const comp = await comparePassword(password, user[0].get("Password"));
+    if (comp) {
       const obj = {};
       user[0]._worksheet.headerValues.forEach((header) => {
         obj[header] = user[0].get(header);
       });
+      if (!obj["Verified"]) {
+        return toast.error(
+          "You are not verified yet. Please contact the admin."
+        );
+      }
       localStorage.setItem("user", JSON.stringify(obj));
       router.push("/home");
       return;

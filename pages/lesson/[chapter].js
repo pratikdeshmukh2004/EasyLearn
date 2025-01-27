@@ -79,6 +79,14 @@ const Lesson = () => {
           >
             {activeIndex != lesson.length - 1 ? "Next Lesson" : "Complete"}
           </button>
+          {activeIndex != 0 && (
+            <button
+              onClick={() => setActiveLesson(lesson[activeIndex - 1])}
+              className="bg-black w-10/12 mx-6 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
+            >
+              Previous Lesson
+            </button>
+          )}
         </div>
       )}
     </div>

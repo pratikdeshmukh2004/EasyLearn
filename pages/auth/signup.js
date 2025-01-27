@@ -3,6 +3,7 @@ import SelectInput from "@/components/forms/SelectController";
 import Header from "@/components/Header";
 import DataContext from "@/Context/dataContext";
 import sheetApiContext from "@/Context/sheetApiContext";
+import { hashPassword } from "@/utils/passwordManager";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -11,6 +12,7 @@ import { toast } from "react-toastify";
 const Signup = () => {
   const { doc, workSheetData } = useContext(sheetApiContext);
   const [dataSheet, setDataSheet] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const loadDataSheet = async () => {
     const d = await workSheetData("DataSheet");
@@ -25,7 +27,7 @@ const Signup = () => {
 
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = event.target; // Get the form element
     const formData = new FormData(form); // Create a FormData object
@@ -39,23 +41,30 @@ const Signup = () => {
     const username = formObject["Username"];
     const password = formObject["Password"];
     const email = formObject["Email ID"];
+    setLoading(true);
+    const users = await workSheetData("Users");
     let user = users.filter((user) => user.get("Username") == username);
     if (user.length) {
+      setLoading(false);
       return toast.error("Username is not available.");
     }
     user = users.filter((user) => user.get("Email ID") == email);
     if (user.length) {
+      setLoading(false);
       return toast.error("User already exists. Please Login.");
     }
     if (formObject["Confirm Password"] != password) {
+      setLoading(false);
       return toast.error("Confirm password doesn't match.");
     }
     delete formObject["Confirm Password"];
+    formObject["Password"] = await hashPassword(formObject["Password"]);
     doc.sheetsByIndex[0].addRows([formObject]).then((data) => {
       console.log("data...", data);
       localStorage.setItem("user", JSON.stringify(formObject));
-      router.push("/language");
+      router.push("/home");
     });
+    setLoading(false);
     return;
   };
 
@@ -94,8 +103,9 @@ const Signup = () => {
               label="Medium"
             />
             <button
+              disabled={loading}
               type="submit"
-              className="w-full mb-3 px-4 py-2 text-white font-medium bg-black rounded-lg duration-150"
+              className="w-full disabled:cursor-wait mb-3 px-4 py-2 text-white font-medium bg-black rounded-lg duration-150"
             >
               Sign Up
             </button>

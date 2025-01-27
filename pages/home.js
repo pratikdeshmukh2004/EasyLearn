@@ -12,8 +12,8 @@ const Course = () => {
     chapters = chapters.filter(
       (chapter) =>
         chapter.get("Chapter") &&
-        user["Medium"]?.trim() === chapter.get("Medium")?.trim() &&
-        user["Standard"]?.trim() === chapter.get("Standard")?.trim()
+        user?.Medium?.trim() === chapter.get("Medium")?.trim() &&
+        user?.Standard?.trim() === chapter.get("Standard")?.trim()
     );
     chapters = chapters.sort(
       (a, b) => a.get("Chapter").split(" ")[1] - b.get("Chapter").split(" ")[1]

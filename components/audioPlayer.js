@@ -1,6 +1,8 @@
 import { faVolumeHigh, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Lottie from "react-lottie";
+import audioData from "../animations/audio_playing.json";
 
 const AudioController = ({ link }) => {
   const audioRef = useRef(null); // Reference to the audio element
@@ -14,22 +16,42 @@ const AudioController = ({ link }) => {
     setVolume(newVolume);
   };
 
+  useEffect(() => {
+    audioRef.current.pause();
+    setIsPlaying(false);
+  }, [link]);
+
   return (
-    <div className="shadow-lg rounded-lg mt-5 p-5">
-      <audio
-        ref={audioRef}
-        className="hidden"
-        src="https://github.com/pratikdeshmukh2004/Audio-Player/raw/refs/heads/master/Darkside.mp3"
-      ></audio>
-      <div className="flex justify-between">
+    <div className="shadow-custom rounded-lg mt-5 p-5">
+      <audio ref={audioRef} className="hidden" src={link}></audio>
+      <div className="flex items-center justify-between">
         <button
-          onClick={() => audioRef.current.play()}
+          onClick={() => {
+            audioRef.current.play();
+            setIsPlaying(true);
+          }}
           className="bg-black hover:bg-gray-700 p-3 px-6 rounded-lg text-white text-sm font-medium"
         >
           Play
         </button>
+        {isPlaying && (
+          <Lottie
+            style={{ width: "70px", height: "30px", cursor: "wait" }}
+            options={{
+              loop: true,
+              autoplay: true,
+              animationData: audioData,
+              rendererSettings: {
+                preserveAspectRatio: "xMidYMid slice",
+              },
+            }}
+          />
+        )}
         <button
-          onClick={() => audioRef.current.pause()}
+          onClick={() => {
+            audioRef.current.pause();
+            setIsPlaying(false);
+          }}
           className="bg-black hover:bg-gray-700 p-3 px-6 rounded-lg text-white text-sm font-medium"
         >
           Pause
