@@ -41,6 +41,7 @@ export default function App({ Component, pageProps }) {
     if (worksheet[sheet] && !refresh) {
       return worksheet[sheet];
     }
+    // setLoading(true);
     const data = await doc.sheetsByTitle[sheet]
       .getRows()
       .then((data) => {
@@ -51,6 +52,7 @@ export default function App({ Component, pageProps }) {
       .catch((err) => {
         console.log("Sheet Loading Error", err);
       });
+    // setLoading(false);
     return data;
   };
 
