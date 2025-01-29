@@ -77,7 +77,7 @@ export default function App({ Component, pageProps }) {
       <Head>
         <title>EasyLearn</title>
       </Head>
-      <sheetApiContext.Provider value={{ doc, workSheetData, user }}>
+      <sheetApiContext.Provider value={{ doc, workSheetData, user, setUser }}>
         <ToastContainer />
         <Component {...pageProps} />
       </sheetApiContext.Provider>

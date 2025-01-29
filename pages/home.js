@@ -4,26 +4,7 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
 const Course = () => {
-  const { workSheetData, user } = useContext(sheetApiContext);
-  const [activeChapter, setActiveChapter] = useState(null);
-
-  const getChapter = async () => {
-    let chapters = await workSheetData("Chapters");
-    chapters = chapters.filter(
-      (chapter) =>
-        chapter.get("Chapter") &&
-        user?.Medium?.trim() === chapter.get("Medium")?.trim() &&
-        user?.Standard?.trim() === chapter.get("Standard")?.trim()
-    );
-    chapters = chapters.sort(
-      (a, b) => a.get("Chapter").split(" ")[1] - b.get("Chapter").split(" ")[1]
-    );
-    setActiveChapter(chapters[0]);
-  };
-
-  useEffect(() => {
-    getChapter();
-  }, []);
+  const { user } = useContext(sheetApiContext);
 
   return (
     <div className="text-center">
@@ -33,10 +14,13 @@ const Course = () => {
           { title: "Settings", link: "/settings" },
         ]}
       />
-      <h5 className="font-bold mt-32 text-xl">Home</h5>
-      <Link href={`/lesson/${activeChapter?.get("Chapter")}`}>
+      <h5 className="font-bold mt-32 text-2xl">Home</h5>
+      <Link href={user?.Chapter ? `/lesson/${user.Chapter}` : "#"}>
         <button className="mt-14 bg-black text-white rounded-md py-3 px-5">
-          Self Guided Course
+          Self Guided Course{" "}
+          <span className="bg-white text-black rounded-lg p-0.5 px-2 ml-3 text-sm">
+            {user?.Chapter || "Chapter 1"}
+          </span>
         </button>
       </Link>
       <br />

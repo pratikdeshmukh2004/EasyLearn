@@ -10,7 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const Signup = () => {
-  const { doc, workSheetData } = useContext(sheetApiContext);
+  const { doc, workSheetData, setUser } = useContext(sheetApiContext);
   const [dataSheet, setDataSheet] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -62,6 +62,7 @@ const Signup = () => {
     doc.sheetsByIndex[0].addRows([formObject]).then((data) => {
       console.log("data...", data);
       localStorage.setItem("user", JSON.stringify(formObject));
+      setUser(formObject);
       router.push("/home");
     });
     setLoading(false);

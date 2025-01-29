@@ -1,5 +1,6 @@
 import AudioController from "@/components/audioPlayer";
 import Header from "@/components/Header";
+import Loader from "@/components/loader";
 import sheetApiContext from "@/Context/sheetApiContext";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -44,17 +45,22 @@ const Lesson = () => {
     return router.push("/chapters");
   }
 
+  if (lesson == null) return <Loader/>
+
   return (
     <div>
       <Header buttons={[{ title: "Home", link: "/home" }]} />
       {activeLesson && (
         <div className="mt-24 mx-5">
-          <h1 className="text-2xl font-medium">
-            {activeLesson.get("Chapter")} : {activeLesson.get("Topic Title")}
+          <p className="text-center">{activeLesson.get("Chapter")}</p>
+          <h1 className="text-2xl mt-5 text-center font-medium">
+            {activeLesson.get("Topic Title")}
           </h1>
           <>
-            <p className="text-sm mt-5">
-              கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்
+            <p className="text-sm text-center mt-5">
+              {user.Medium == "English"
+                ? "கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்"
+                : "கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்"}
             </p>
             <AudioController
               link={
@@ -77,14 +83,14 @@ const Lesson = () => {
             onClick={nextLesson}
             className="bg-black w-10/12 mx-6 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
           >
-            {activeIndex != lesson.length - 1 ? "Next Lesson" : "Complete"}
+            {activeIndex != lesson.length - 1 ? "Next Topic" : "Complete"}
           </button>
           {activeIndex != 0 && (
             <button
               onClick={() => setActiveLesson(lesson[activeIndex - 1])}
               className="bg-black w-10/12 mx-6 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
             >
-              Previous Lesson
+              Previous Topic
             </button>
           )}
         </div>

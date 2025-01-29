@@ -1,3 +1,4 @@
+import Loader from "@/components/loader";
 import sheetApiContext from "@/Context/sheetApiContext";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -6,8 +7,9 @@ import { toast } from "react-toastify";
 
 const Quiz = () => {
   const { chapter } = useParams();
+  const nextChapter = parseInt(chapter.split(" ")[1]) + 1;
   const router = useRouter();
-  const { workSheetData, user, doc } = useContext(sheetApiContext);
+  const { workSheetData, user, doc, setUser } = useContext(sheetApiContext);
   const [quiz, setQuiz] = useState(null);
   const [activeQuiz, setActiveQuiz] = useState(null);
   const activeIndex = quiz?.indexOf(activeQuiz);
@@ -31,7 +33,7 @@ const Quiz = () => {
     setStartTime(new Date());
   };
 
-  const nextquiz = () => {
+  const nextquiz = async () => {
     if (activeIndex == quiz.length - 1) {
       if (quiz.length !== Object.keys(answers).length) {
         return toast.error("Answer all questions.");
@@ -40,21 +42,25 @@ const Quiz = () => {
         (q) => answers[q.get("Question")] === q.get("Answer")
       );
       console.log(c_ans);
-      setAnswers({});
-      doc.sheetsByIndex[3]
-        .addRows([
-          {
-            Username: user["Username"],
-            Chapter: chapter,
-            Questions: quiz.length,
-            "Correct Answer": c_ans.length,
-            "Time Taken": Math.floor((new Date() - startTime) / 1000),
-            Date: new Date(),
-          },
-        ])
-        .then(() => {
-          router.push(`/score/${activeQuiz.get("Chapter")}`);
-        });
+      setQuiz(null);
+      await doc.sheetsByIndex[3].addRows([
+        {
+          Username: user["Username"],
+          Chapter: chapter,
+          Questions: quiz.length,
+          "Correct Answer": c_ans.length,
+          "Time Taken": Math.floor((new Date() - startTime) / 1000),
+          Date: new Date(),
+        },
+      ]);
+      const users = await workSheetData("Users");
+      const userd = users.filter(
+        (u) => u.get("Username") == user["Username"]
+      )[0];
+      userd.set("Chapter", `Chapter ${nextChapter}`);
+      await userd.save();
+      setUser({ ...user, Chapter: `Chapter ${nextChapter}` });
+      router.push(`/score/${chapter}`);
       return;
     }
     setActiveQuiz(quiz[activeIndex + 1]);
@@ -62,16 +68,9 @@ const Quiz = () => {
 
   const prequiz = () => {
     if (activeIndex == 0) {
-      router.push(`/lesson/${activeQuiz.get("Chapter")}`);
+      router.push(`/lesson/${chapter}`);
     }
     setActiveQuiz(quiz[activeIndex - 1]);
-  };
-
-  const handleOptoinSelect = (e) => {
-    setAnswers({
-      ...answers,
-      [quiz[activeIndex].get("Question")]: e.target.value,
-    });
   };
 
   useEffect(() => {
@@ -81,102 +80,125 @@ const Quiz = () => {
   if (!chapter) {
     return router.push("/chapters");
   }
-  if (!activeQuiz) {
-    return;
+  if (quiz == null) {
+    return <Loader />;
   }
+  console.log(answers);
+
   return (
     <div>
       <div className="p-3 shadow-lg">
-        <h1 className="text-2xl font-bold">{activeQuiz?.get("Chapter")}</h1>
+        <h1 className="text-2xl font-bold text-center">{chapter}</h1>
       </div>
-      <div className="mx-4">
-        <div className="shadow-lg w-full mt-5 p-3 rounded-lg">
-          <h3 className="text-xl">
-            Question {activeIndex + 1}: {activeQuiz?.get("Question")}
-          </h3>
-          <form onChange={handleOptoinSelect}>
-            <div className="flex flex-col space-y-4 mt-3">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id={activeQuiz?.get("A")}
-                  name="options"
-                  checked={
-                    activeQuiz?.get("A") == answers[activeQuiz?.get("Question")]
-                  }
-                  value={activeQuiz?.get("A")}
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor={activeQuiz?.get("A")} className="text-gray-700">
-                  A) {activeQuiz?.get("A")}
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id={activeQuiz?.get("B")}
-                  checked={
-                    activeQuiz?.get("B") == answers[activeQuiz?.get("Question")]
-                  }
-                  name="options"
-                  value={activeQuiz?.get("B")}
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor={activeQuiz?.get("B")} className="text-gray-700">
-                  B) {activeQuiz?.get("B")}
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id={activeQuiz?.get("C")}
-                  checked={
-                    activeQuiz?.get("C") == answers[activeQuiz?.get("Question")]
-                  }
-                  name="options"
-                  value={activeQuiz?.get("C")}
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor={activeQuiz?.get("C")} className="text-gray-700">
-                  C) {activeQuiz?.get("C")}
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id={activeQuiz?.get("D")}
-                  name="options"
-                  checked={
-                    activeQuiz?.get("D") == answers[activeQuiz?.get("Question")]
-                  }
-                  value={activeQuiz?.get("D")}
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor={activeQuiz?.get("D")} className="text-gray-700">
-                  D) {activeQuiz?.get("D")}
-                </label>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div className="flex mt-5 items-center justify-between">
-          <button
-            onClick={prequiz}
-            className="bg-black hover:bg-gray-700 p-3 px-8 rounded-lg text-white text-sm font-bold"
-          >
-            {activeIndex == 0 ? "Lesson" : "Prev"}
-          </button>
-          <p>
-            {activeIndex + 1} of {quiz?.length}
+      {!quiz.length && (
+        <div className="mx-4">
+          <p className="p-3 border border-rose-600 mt-16 rounded-lg text-rose-400 bg-rose-50">
+            No quiz found for this chapter.
           </p>
           <button
-            onClick={nextquiz}
-            className="bg-black hover:bg-gray-700 p-3 px-8 rounded-lg text-white text-sm font-bold"
+            onClick={() => router.push(`/lesson/${chapter}`)}
+            className="bg-black w-full mt-10 hover:bg-gray-700 p-3 px-8 rounded-lg text-white text-sm font-bold"
           >
-            {activeIndex != quiz?.length - 1 ? "Next" : "Complete"}
+            Back to lesson
           </button>
         </div>
-      </div>
+      )}
+      {quiz.length > 0 && (
+        <div className="mx-4">
+          <div className="shadow-custom w-full mt-5 p-5 rounded-lg">
+            <h3 className="text-xl">
+              Question {activeIndex + 1}: {activeQuiz?.get("Question")}
+            </h3>
+            <div className="flex flex-col space-y-4 mt-5">
+              <button
+                onClick={() =>
+                  setAnswers({
+                    ...answers,
+                    [quiz[activeIndex]?.get("Question")]: activeQuiz.get("A"),
+                  })
+                }
+                className={
+                  "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
+                  (answers[quiz[activeIndex]?.get("Question")] ===
+                  activeQuiz?.get("A")
+                    ? "bg-gray-700 text-white"
+                    : "")
+                }
+              >
+                A. {activeQuiz?.get("A")}
+              </button>
+              <button
+                onClick={() =>
+                  setAnswers({
+                    ...answers,
+                    [quiz[activeIndex]?.get("Question")]: activeQuiz?.get("B"),
+                  })
+                }
+                className={
+                  "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
+                  (answers[quiz[activeIndex]?.get("Question")] ===
+                  activeQuiz?.get("B")
+                    ? "bg-gray-700 text-white"
+                    : "")
+                }
+              >
+                B. {activeQuiz?.get("B")}
+              </button>
+              <button
+                onClick={() =>
+                  setAnswers({
+                    ...answers,
+                    [quiz[activeIndex]?.get("Question")]: activeQuiz?.get("C"),
+                  })
+                }
+                className={
+                  "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
+                  (answers[quiz[activeIndex]?.get("Question")] ===
+                  activeQuiz?.get("C")
+                    ? "bg-gray-700 text-white"
+                    : "")
+                }
+              >
+                C. {activeQuiz?.get("C")}
+              </button>
+              <button
+                onClick={() =>
+                  setAnswers({
+                    ...answers,
+                    [quiz[activeIndex]?.get("Question")]: activeQuiz?.get("D"),
+                  })
+                }
+                className={
+                  "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
+                  (answers[quiz[activeIndex]?.get("Question")] ===
+                  activeQuiz?.get("D")
+                    ? "bg-gray-700 text-white"
+                    : "")
+                }
+              >
+                D. {activeQuiz?.get("D")}
+              </button>
+            </div>
+          </div>
+          <p className="m-8 text-center">
+            {activeIndex + 1} of {quiz?.length}
+          </p>
+          <div className="flex mt-5 flex-col-reverse gap-10 items-center justify-between">
+            <button
+              onClick={prequiz}
+              className="bg-black hover:bg-gray-700 w-full p-3 px-8 rounded-lg text-white text-md font-bold"
+            >
+              {activeIndex == 0 ? "Lesson" : "Prev"}
+            </button>
+            <button
+              onClick={nextquiz}
+              className="bg-black hover:bg-gray-700 w-full p-3 px-8 rounded-lg text-white text-md font-bold"
+            >
+              {activeIndex != quiz?.length - 1 ? "Next" : "Complete"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

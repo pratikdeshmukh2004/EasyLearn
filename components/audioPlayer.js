@@ -34,19 +34,11 @@ const AudioController = ({ link }) => {
         >
           Play
         </button>
-        {isPlaying && (
-          <Lottie
-            style={{ width: "70px", height: "30px", cursor: "wait" }}
-            options={{
-              loop: true,
-              autoplay: true,
-              animationData: audioData,
-              rendererSettings: {
-                preserveAspectRatio: "xMidYMid slice",
-              },
-            }}
-          />
-        )}
+        <select>
+          <option>Speed</option>
+          <option>1x</option>
+        </select>
+
         <button
           onClick={() => {
             audioRef.current.pause();

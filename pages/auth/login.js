@@ -12,7 +12,7 @@ import sheetApiContext from "@/Context/sheetApiContext";
 import { comparePassword } from "@/utils/passwordManager";
 
 const LoginForm = () => {
-  const { workSheetData } = useContext(sheetApiContext);
+  const { workSheetData, setUser } = useContext(sheetApiContext);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -41,6 +41,7 @@ const LoginForm = () => {
             );
           }
           localStorage.setItem("user", JSON.stringify(obj));
+          setUser(obj);
           router.push("/home");
         } else {
           toast.error("User doesn't exists. Please Signup.");
@@ -86,6 +87,7 @@ const LoginForm = () => {
         );
       }
       localStorage.setItem("user", JSON.stringify(obj));
+      setUser(obj);
       router.push("/home");
       return;
     }
