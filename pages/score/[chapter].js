@@ -37,7 +37,7 @@ const Score = () => {
       <h1 className="text-center shadow-md p-5 text-xl font-bold">
         Congratulations
       </h1>
-      <div className="h-72 w-10/12 shadow-custom mt-16 mx-auto rounded-lg">
+      <div className="h-72 w-10/12 shadow-custom mt-10 mx-auto rounded-lg">
         <h1 className="text-center text-5xl p-6 ">Your Score</h1>
         <h5 className="text-center text-3xl ">{percentage || 0}%</h5>
         <div className="m-5">
@@ -58,7 +58,7 @@ const Score = () => {
       </div>
       <button
         onClick={() => router.push("/chapters")}
-        className="bg-black w-10/12 mx-7 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
+        className="bg-black w-10/12 mx-7 mt-8 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
       >
         Back to Contents
       </button>
@@ -69,7 +69,7 @@ const Score = () => {
             ? router.push(`/lesson/Chapter ${nextChapter}`)
             : router.push(`/quiz/${chapter}`)
         }
-        className="bg-black w-10/12 mx-7 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
+        className="bg-black w-10/12 mx-7 mt-5 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
       >
         {percentage >= 75 ? "Next Lesson" : "Reatempt Quiz"}
       </button>

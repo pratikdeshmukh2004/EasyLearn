@@ -15,7 +15,7 @@ const Course = () => {
         ]}
       />
       <h5 className="font-bold mt-32 text-2xl">Home</h5>
-      <Link href={user?.Chapter ? `/lesson/${user.Chapter}` : "#"}>
+      <Link href={`/lesson/${user.Chapter || "Chapter 1"}`}>
         <button className="mt-14 bg-black text-white rounded-md py-3 px-5">
           Self Guided Course{" "}
           <span className="bg-white text-black rounded-lg p-0.5 px-2 ml-3 text-sm">

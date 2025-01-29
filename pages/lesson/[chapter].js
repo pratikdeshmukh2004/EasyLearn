@@ -76,19 +76,19 @@ const Lesson = () => {
           கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்
         </p>
         <AudioController /> */}
-          <p className="mt-10 text-center">
+          <p className="mt-5 text-center">
             {lesson.indexOf(activeLesson) + 1} / {lesson.length}
           </p>
           <button
             onClick={nextLesson}
-            className="bg-black w-10/12 mx-6 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
+            className="bg-black w-10/12 mx-6 mt-5 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
           >
             {activeIndex != lesson.length - 1 ? "Next Topic" : "Complete"}
           </button>
           {activeIndex != 0 && (
             <button
               onClick={() => setActiveLesson(lesson[activeIndex - 1])}
-              className="bg-black w-10/12 mx-6 mt-10 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
+              className="bg-black w-10/12 mx-6 mt-5 hover:bg-gray-700 p-3 rounded-lg text-white text-lg font-medium"
             >
               Previous Topic
             </button>

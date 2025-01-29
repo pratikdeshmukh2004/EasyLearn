@@ -180,10 +180,10 @@ const Quiz = () => {
               </button>
             </div>
           </div>
-          <p className="m-8 text-center">
+          <p className="m-3 text-center">
             {activeIndex + 1} of {quiz?.length}
           </p>
-          <div className="flex mt-5 flex-col-reverse gap-10 items-center justify-between">
+          <div className="flex mt-5 flex-col-reverse gap-5 items-center justify-between">
             <button
               onClick={prequiz}
               className="bg-black hover:bg-gray-700 w-full p-3 px-8 rounded-lg text-white text-md font-bold"
