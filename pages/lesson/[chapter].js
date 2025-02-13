@@ -59,7 +59,7 @@ const Lesson = () => {
           <>
             <p className="text-sm text-center mt-5">
               {user.Medium == "English"
-                ? "கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்"
+                ? "To clearly understand the concepts, listen to the first file."
                 : "கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்"}
             </p>
             <AudioController
