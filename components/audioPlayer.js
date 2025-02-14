@@ -9,17 +9,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import Lottie from "react-lottie";
 import audioData from "../animations/audio_playing.json";
+import { useRouter } from "next/router";
 
 const AudioController = ({ link }) => {
   const [audio, setAudio] = useState(new Audio(link)); // Store Audio object in state
-  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.75); // Default volume (1 = 100%)
   const [speed, setSpeed] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    audio.pause();
-    setAudio(new Audio(link));
-    setIsPlaying(false);
+    const newAudio = new Audio(link);
+    newAudio.playbackRate = speed;
+    newAudio.volume = volume;
+    setAudio(newAudio);
+
+    // Cleanup function to pause and remove the audio object
+    return () => {
+      newAudio.pause();
+      newAudio.remove(); // Remove the audio object
+      setIsPlaying(false)
+    };
   }, [link]);
 
   useEffect(() => {
@@ -29,17 +39,6 @@ const AudioController = ({ link }) => {
   useEffect(() => {
     audio.playbackRate = speed;
   }, [speed]);
-
-  // Handle play/pause functionality
-  const handlePlay = () => {
-    audio.play();
-    setIsPlaying(true);
-  };
-
-  const handlePause = () => {
-    audio.pause();
-    setIsPlaying(false);
-  };
 
   const changeVolume = (value) => {
     const newVolume = Math.min(1, Math.max(0, volume + value));
@@ -51,20 +50,24 @@ const AudioController = ({ link }) => {
     setSpeed(newSpeed);
   };
 
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      setIsPlaying(false);
+      audio.pause();
+    } else {
+      setIsPlaying(true);
+      audio.play();
+    }
+  };
+
   return (
     <div className="shadow-custom rounded-lg mt-5 p-5">
       <div className="flex items-center justify-between">
         <button
-          onClick={handlePlay}
-          className="bg-black hover:bg-gray-700 p-3 px-6 rounded-lg text-white text-sm font-medium"
+          onClick={togglePlayPause}
+          className="bg-black hover:bg-gray-700 w-full p-3 px-6 rounded-lg text-white text-sm font-medium"
         >
-          Play
-        </button>
-        <button
-          onClick={handlePause}
-          className="bg-black hover:bg-gray-700 p-3 px-6 rounded-lg text-white text-sm font-medium"
-        >
-          Pause
+          {isPlaying ? "Pause" : "Play"}
         </button>
       </div>
       <p htmlFor="speed" className="text-sm mt-3 mx-auto text-center">
