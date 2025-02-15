@@ -110,7 +110,7 @@ const Quiz = () => {
               Question {activeIndex + 1}: {activeQuiz?.get("Question")}
             </h3>
             <div className="flex flex-col space-y-4 mt-5">
-              <button
+              {activeQuiz?.get("A") && <button
                 onClick={() =>
                   setAnswers({
                     ...answers,
@@ -120,14 +120,14 @@ const Quiz = () => {
                 className={
                   "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
                   (answers[quiz[activeIndex]?.get("Question")] ===
-                  activeQuiz?.get("A")
+                    activeQuiz?.get("A")
                     ? "bg-gray-700 text-white"
                     : "")
                 }
               >
                 A. {activeQuiz?.get("A")}
-              </button>
-              <button
+              </button>}
+              {activeQuiz?.get("B") && <button
                 onClick={() =>
                   setAnswers({
                     ...answers,
@@ -137,14 +137,14 @@ const Quiz = () => {
                 className={
                   "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
                   (answers[quiz[activeIndex]?.get("Question")] ===
-                  activeQuiz?.get("B")
+                    activeQuiz?.get("B")
                     ? "bg-gray-700 text-white"
                     : "")
                 }
               >
                 B. {activeQuiz?.get("B")}
-              </button>
-              <button
+              </button>}
+              {activeQuiz?.get("C") && <button
                 onClick={() =>
                   setAnswers({
                     ...answers,
@@ -154,14 +154,14 @@ const Quiz = () => {
                 className={
                   "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
                   (answers[quiz[activeIndex]?.get("Question")] ===
-                  activeQuiz?.get("C")
+                    activeQuiz?.get("C")
                     ? "bg-gray-700 text-white"
                     : "")
                 }
               >
                 C. {activeQuiz?.get("C")}
-              </button>
-              <button
+              </button>}
+              {activeQuiz?.get("D") && <button
                 onClick={() =>
                   setAnswers({
                     ...answers,
@@ -171,13 +171,13 @@ const Quiz = () => {
                 className={
                   "text-md text-left p-3 rounded-lg border border-gray-500 bg-gray-300 " +
                   (answers[quiz[activeIndex]?.get("Question")] ===
-                  activeQuiz?.get("D")
+                    activeQuiz?.get("D")
                     ? "bg-gray-700 text-white"
                     : "")
                 }
               >
                 D. {activeQuiz?.get("D")}
-              </button>
+              </button>}
             </div>
           </div>
           <p className="m-3 text-center">
