@@ -46,7 +46,7 @@ const AudioController = ({ link }) => {
   };
 
   const changeSpeed = (value) => {
-    const newSpeed = Math.min(2, Math.max(0.5, speed + value));
+    const newSpeed = Math.min(6, Math.max(0.5, speed + value));
     setSpeed(newSpeed);
   };
 
@@ -90,9 +90,8 @@ const AudioController = ({ link }) => {
             value={volume}
             className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-gray-800"
             style={{
-              background: `linear-gradient(to right, #424242 0%, #424242 ${
-                volume * 100
-              }%, #ddd ${volume * 100}%, #ddd 100%)`,
+              background: `linear-gradient(to right, #424242 0%, #424242 ${volume * 100
+                }%, #ddd ${volume * 100}%, #ddd 100%)`,
             }}
             onChange={(e) => setVolume(parseFloat(e.target.value))}
           />
@@ -119,13 +118,12 @@ const AudioController = ({ link }) => {
             type="range"
             id="speed"
             min="0.5"
-            max="2"
+            max="6"
             step="0.5"
             value={speed}
             style={{
-              background: `linear-gradient(to right, #424242 0%, #424242 ${
-                ((speed - 0.5) / 1.5) * 100
-              }%, #ddd ${((speed - 0.5) / 1.5) * 100}%, #ddd 100%)`,
+              background: `linear-gradient(to right, #424242 0%, #424242 ${((speed - 0.5) / 6) * 100
+                }%, #ddd ${((speed - 0.5) / 6) * 100}%, #ddd 100%)`,
             }}
             className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-gray-800"
             onChange={(e) => setSpeed(parseFloat(e.target.value))}
