@@ -77,7 +77,7 @@ const Lesson = () => {
             <AudioController
               isPlaying={isPlayingTN}
               setIsPlaying={setIsPlayingTN}
-              link={activeLesson.get("Audio_EN")}
+              link={activeLesson.get("Audio_TAxEN")}
             />
           </>
           <>
@@ -89,7 +89,7 @@ const Lesson = () => {
             <AudioController
               isPlaying={isPlayingEN}
               setIsPlaying={setIsPlayingEN}
-              link={activeLesson.get("Audio_TAxEN")}
+              link={activeLesson.get("Audio_EN")}
             />
           </>
           <p className="mt-5 text-center">
