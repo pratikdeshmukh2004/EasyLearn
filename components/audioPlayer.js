@@ -1,22 +1,14 @@
 import {
-  faGauge,
   faMinusSquare,
-  faPlusSquare,
-  faVolumeHigh,
-  faVolumeLow,
+  faPlusSquare
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
-import Lottie from "react-lottie";
-import audioData from "../animations/audio_playing.json";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-const AudioController = ({ link }) => {
+const AudioController = ({ link, isPlaying, setIsPlaying }) => {
   const [audio, setAudio] = useState(new Audio(link)); // Store Audio object in state
   const [volume, setVolume] = useState(0.75); // Default volume (1 = 100%)
   const [speed, setSpeed] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const newAudio = new Audio(link);
@@ -24,21 +16,37 @@ const AudioController = ({ link }) => {
     newAudio.volume = volume;
     setAudio(newAudio);
 
-    // Cleanup function to pause and remove the audio object
+    // Handle when audio ends
+    const handleEnded = () => {
+      setIsPlaying(false);
+    };
+
+    newAudio.addEventListener('ended', handleEnded);
+
+    // Cleanup
     return () => {
       newAudio.pause();
       newAudio.remove(); // Remove the audio object
-      setIsPlaying(false)
+      newAudio.removeEventListener('ended', handleEnded);
+      setIsPlaying(false);
     };
   }, [link]);
 
   useEffect(() => {
+    if (isPlaying) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, audio]);
+
+  useEffect(() => {
     audio.volume = volume;
-  }, [volume]);
+  }, [volume, audio]);
 
   useEffect(() => {
     audio.playbackRate = speed;
-  }, [speed]);
+  }, [speed, audio]);
 
   const changeVolume = (value) => {
     const newVolume = Math.min(1, Math.max(0, volume + value));
@@ -70,7 +78,8 @@ const AudioController = ({ link }) => {
           {isPlaying ? "Pause" : "Play"}
         </button>
       </div>
-      <p htmlFor="speed" className="text-sm mt-3 mx-auto text-center">
+
+      <p htmlFor="volume" className="text-sm mt-3 mx-auto text-center">
         Volume {Math.round(volume * 100)}%
       </p>
       <div className="flex gap-2 justify-between items-center relative">
@@ -90,8 +99,7 @@ const AudioController = ({ link }) => {
             value={volume}
             className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-gray-800"
             style={{
-              background: `linear-gradient(to right, #424242 0%, #424242 ${volume * 100
-                }%, #ddd ${volume * 100}%, #ddd 100%)`,
+              background: `linear-gradient(to right, #424242 0%, #424242 ${volume * 100}%, #ddd ${volume * 100}%, #ddd 100%)`,
             }}
             onChange={(e) => setVolume(parseFloat(e.target.value))}
           />
@@ -103,6 +111,7 @@ const AudioController = ({ link }) => {
           icon={faPlusSquare}
         />
       </div>
+
       <p htmlFor="speed" className="text-sm mt-3 mx-auto text-center">
         Speed {speed}x
       </p>
@@ -122,15 +131,14 @@ const AudioController = ({ link }) => {
             step="0.5"
             value={speed}
             style={{
-              background: `linear-gradient(to right, #424242 0%, #424242 ${((speed - 0.5) / 6) * 100
-                }%, #ddd ${((speed - 0.5) / 6) * 100}%, #ddd 100%)`,
+              background: `linear-gradient(to right, #424242 0%, #424242 ${((speed - 0.5) / 5.5) * 100}%, #ddd ${((speed - 0.5) / 5.5) * 100}%, #ddd 100%)`,
             }}
             className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-gray-800"
             onChange={(e) => setSpeed(parseFloat(e.target.value))}
           />
         </div>
         <FontAwesomeIcon
-          onClick={() => changeSpeed(+0.5)}
+          onClick={() => changeSpeed(0.5)}
           className="cursor-pointer"
           size="2xl"
           icon={faPlusSquare}

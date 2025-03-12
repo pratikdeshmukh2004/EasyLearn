@@ -14,6 +14,8 @@ const Lesson = () => {
   const [lesson, setLesson] = useState(null);
   const [activeLesson, setActiveLesson] = useState(null);
   const activeIndex = lesson?.indexOf(activeLesson);
+  const [isPlayingTN, setIsPlayingTN] = useState(false);
+  const [isPlayingEN, setIsPlayingEN] = useState(false);
 
   const getChapter = async () => {
     let lesson = await workSheetData("Chapters");
@@ -41,11 +43,21 @@ const Lesson = () => {
     getChapter();
   }, []);
 
+  useEffect(()=>{
+    if (isPlayingEN){
+      setIsPlayingTN(false)
+    }
+    if (isPlayingTN){
+      setIsPlayingEN(false)
+    }
+  }, [isPlayingEN, isPlayingTN])
+
   if (!chapter) {
     return router.push("/chapters");
   }
 
-  if (lesson == null) return <Loader/>
+
+  if (lesson == null) return <Loader />;
 
   return (
     <div>
@@ -63,19 +75,23 @@ const Lesson = () => {
                 : "கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்"}
             </p>
             <AudioController
-              link={
-                activeLesson.get("Audio_EN") ||
-                activeLesson.get("Audio_TAxEN") ||
-                activeLesson.get("Audio_TA") ||
-                activeLesson.get("Audio_IF_TAxEN") ||
-                activeLesson.get("Audio_IF_TA")
-              }
+              isPlaying={isPlayingTN}
+              setIsPlaying={setIsPlayingTN}
+              link={activeLesson.get("Audio_EN")}
             />
           </>
-          {/* <p className="text-sm mt-10">
-          கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்
-        </p>
-        <AudioController /> */}
+          <>
+            <p className="text-sm text-center mt-5">
+              {user.Medium == "English"
+                ? "to prepare for exam, listen to the following audio lesson"
+                : "கருத்துக்களை தெளிவாகப் புரிந்துகொள்ள முதல் கோப்பைக் கேளுங்கள்"}
+            </p>
+            <AudioController
+              isPlaying={isPlayingEN}
+              setIsPlaying={setIsPlayingEN}
+              link={activeLesson.get("Audio_TAxEN")}
+            />
+          </>
           <p className="mt-5 text-center">
             {lesson.indexOf(activeLesson) + 1} / {lesson.length}
           </p>
