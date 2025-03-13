@@ -5,7 +5,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
-const AudioController = ({ link, isPlaying, setIsPlaying }) => {
+const AudioController = ({ link, isPlaying, setIsPlaying, playText, pauseText }) => {
   const [audio, setAudio] = useState(new Audio(link)); // Store Audio object in state
   const [volume, setVolume] = useState(0.75); // Default volume (1 = 100%)
   const [speed, setSpeed] = useState(1);
@@ -75,7 +75,7 @@ const AudioController = ({ link, isPlaying, setIsPlaying }) => {
           onClick={togglePlayPause}
           className="bg-black hover:bg-gray-700 w-full p-3 px-6 rounded-lg text-white text-sm font-medium"
         >
-          {isPlaying ? "Pause" : "Play"}
+          {isPlaying ? pauseText : playText}
         </button>
       </div>
 

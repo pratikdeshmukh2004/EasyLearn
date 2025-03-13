@@ -78,6 +78,8 @@ const Lesson = () => {
               isPlaying={isPlayingTN}
               setIsPlaying={setIsPlayingTN}
               link={activeLesson.get("Audio_TAxEN")}
+              playText = "தமிழில் கேளுங்கள்"
+              pauseText = "நிறுத்துக"
             />
           </>
           <>
@@ -88,6 +90,8 @@ const Lesson = () => {
             </p>
             <AudioController
               isPlaying={isPlayingEN}
+              playText="Listen in English"
+              pauseText="Pause"
               setIsPlaying={setIsPlayingEN}
               link={activeLesson.get("Audio_EN")}
             />
